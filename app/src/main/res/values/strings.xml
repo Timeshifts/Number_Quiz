@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Number_Quiz</string>
+    <string name="app_name">숫자 퀴즈</string>
+    <string name="title">숫자 퀴즈!</string>
+    <string name="start_button">시작하기</string>
 </resources>
