@@ -25,7 +25,9 @@
             android:layout_weight="1"
             android:scaleX="1"
             android:scaleY="1"
-            android:text="Button" />
+            android:textSize="28sp"
+            android:textStyle="bold"
+            tools:text="1234" />
 
         <Button
             android:id="@+id/button3"
@@ -33,7 +35,9 @@
             android:layout_width="96dp"
             android:layout_height="64dp"
             android:layout_weight="1"
-            android:text="Button2" />
+            android:textSize="28sp"
+            android:textStyle="bold"
+            tools:text="2345" />
 
         <Button
             android:id="@+id/button4"
@@ -42,7 +46,9 @@
             android:layout_height="64dp"
             android:layout_marginStart="15dp"
             android:layout_weight="1"
-            android:text="Button3" />
+            android:textSize="28sp"
+            android:textStyle="bold"
+            tools:text="3456" />
     </LinearLayout>
 
     <LinearLayout
@@ -61,24 +67,26 @@
 
         <ImageView
             android:id="@+id/heartView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:srcCompat="@drawable/heart" />
 
         <ImageView
             android:id="@+id/heartView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:srcCompat="@drawable/heart" />
 
         <ImageView
             android:id="@+id/heartView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_weight="1"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:scaleX="1"
+            android:scaleY="1"
+            app:srcCompat="@drawable/heart" />
     </LinearLayout>
 
     <TextView
@@ -87,7 +95,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, \nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         android:textAlignment="center"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -95,7 +102,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/heartLayout"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintVertical_bias="0.4"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, \nsed do eiusmod tempor incididunt ut labore et dolore magna aliqua." />
 
     <TextView
         android:id="@+id/scoreView"
@@ -104,7 +112,6 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
-        android:text="Score: 0"
         android:textAlignment="textEnd"
         android:textSize="32sp"
         android:textStyle="bold"
@@ -113,5 +120,6 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/heartLayout"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Score: 000" />
 </androidx.constraintlayout.widget.ConstraintLayout>

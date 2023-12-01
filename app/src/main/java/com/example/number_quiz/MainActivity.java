@@ -1,8 +1,10 @@
 package com.example.number_quiz;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -21,11 +23,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Button startButton = findViewById(R.id.startButton);
+        startButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), GameActivity.class);
+            startActivity(intent);
+        });
+
         if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(getApplicationContext());
         }
 
-        makeRequest();
+        //makeRequest();
     }
 
     public void makeRequest() {
