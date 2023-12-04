@@ -2,4 +2,13 @@
     <string name="app_name">숫자 퀴즈</string>
     <string name="title">숫자 퀴즈!</string>
     <string name="start_button">시작하기</string>
+    <string name="score_view">점수: %1$d</string>
+    <string name="correct_answer">정답입니다!</string>
+    <string name="incorrect_answer">오답입니다. 정답은 %1$d입니다.</string>
+    <string name="next_button">다음</string>
+    <string name="game_over">게임 오버!</string>
+    <string name="title_button">처음으로</string>
+    <string name="third_heart">하트: 3</string>
+    <string name="second_heart">하트: 2</string>
+    <string name="first_heart">하트: 1</string>
 </resources>
