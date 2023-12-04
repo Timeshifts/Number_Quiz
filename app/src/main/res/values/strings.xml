@@ -11,4 +11,5 @@
     <string name="third_heart">하트: 3</string>
     <string name="second_heart">하트: 2</string>
     <string name="first_heart">하트: 1</string>
+    <string name="best_view">"최고: %1$d"</string>
 </resources>

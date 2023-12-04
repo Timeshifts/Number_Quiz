@@ -9,6 +9,11 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.datastore.preferences.core.MutablePreferences;
+import androidx.datastore.preferences.core.Preferences;
+import androidx.datastore.preferences.core.PreferencesKeys;
+import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
+import androidx.datastore.rxjava3.RxDataStore;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,11 +25,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
+
 public class GameActivity extends AppCompatActivity {
 
     static RequestQueue requestQueue;
+    RxDataStore<Preferences> dataStore;
 
     TextView questionView;
+    TextView bestView;
     Button nextButton;
     Button answerButton1;
     Button answerButton2;
@@ -35,13 +45,17 @@ public class GameActivity extends AppCompatActivity {
     public int number1, number2, number3;
     public int hearts = 3;
     public int score = 0;
+    public int highScore = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        dataStore = new RxPreferenceDataStoreBuilder(
+                getApplicationContext(), "highScore").build();
         questionView = findViewById(R.id.questionView);
+        bestView = findViewById(R.id.bestView);
         nextButton = findViewById(R.id.nextButton);
         answerButton1 = findViewById(R.id.answer1);
         answerButton2 = findViewById(R.id.answer2);
@@ -72,8 +86,26 @@ public class GameActivity extends AppCompatActivity {
     }
 
     public void updateScoreView() {
+        Preferences.Key<Integer> highScoreKey;
+        try {
+            highScoreKey = PreferencesKeys.intKey("highScore");
+            Flowable<Integer> highScoreFlow = dataStore.data().map(
+                    prefs -> prefs.get(highScoreKey));
+            highScore = highScoreFlow.blockingFirst();
+        } catch (Exception e) {
+            highScore = 0;
+        }
+        if (highScore < score) {
+            highScore = score;
+            dataStore.updateDataAsync(prefsIn -> {
+                MutablePreferences mutablePreferences = prefsIn.toMutablePreferences();
+                mutablePreferences.set(PreferencesKeys.intKey("highScore"), highScore);
+                return Single.just(mutablePreferences);
+            });
+        }
         final TextView scoreView = findViewById(R.id.scoreView);
         scoreView.setText(getString(R.string.score_view, score));
+        bestView.setText(getString(R.string.best_view, highScore));
     }
 
     public void handleUserAnswer(int userAnswerNo) {
@@ -101,6 +133,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void returnToTitle() {
+        dataStore.dispose();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
     }
