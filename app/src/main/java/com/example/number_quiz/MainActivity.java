@@ -5,6 +5,11 @@ import android.os.Bundle;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
+
+import java.util.Locale;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,6 +24,21 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        final Button langButton = findViewById(R.id.langButton);
+        langButton.setOnClickListener(v -> {
+            LocaleListCompat oldLocale, newLocale;
+            oldLocale = AppCompatDelegate.getApplicationLocales();
+            if (oldLocale.isEmpty() ) {
+                newLocale = LocaleListCompat.forLanguageTags("en-US");
+            } else {
+                if (Objects.requireNonNull(oldLocale.get(0)).getLanguage().equals(new Locale("en").getLanguage())) {
+                    newLocale = LocaleListCompat.forLanguageTags("ko-KR");
+                } else {
+                    newLocale = LocaleListCompat.forLanguageTags("en-US");
+                }
+            }
+            AppCompatDelegate.setApplicationLocales(newLocale);
+        });
     }
 
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">숫자 퀴즈</string>
     <string name="title">숫자 퀴즈!</string>
@@ -13,5 +14,5 @@
     <string name="first_heart">하트: 1</string>
     <string name="best_view">"최고: %1$d"</string>
     <string name="select_lang">언어: </string>
-    <string name="language">English</string>
+    <string name="language">한국어</string>
 </resources>
