@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="number_api_key" translatable="false">YOUR_API_KEY</string>
+    <string name="number_api_host" translatable="false">numbersapi.p.rapidapi.com</string>
+    <string name="translate_api_key" translatable="false">YOUR_API_KEY</string>
+    <string name="translate_api_host" translatable="false">google-translate113.p.rapidapi.com</string>
+</resources>
