@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.datastore.preferences.core.MutablePreferences;
 import androidx.datastore.preferences.core.Preferences;
 import androidx.datastore.preferences.core.PreferencesKeys;
@@ -22,7 +24,9 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -142,7 +146,14 @@ public class GameActivity extends AppCompatActivity {
 
         Gson gson = new Gson();
         NumberResponse numberResponse = gson.fromJson(response, NumberResponse.class);
-        questionView.setText(String.format("Which number is %s?", numberResponse.text));
+        String question = String.format("Which number is %s?", numberResponse.text);
+
+        LocaleListCompat localeListCompat = AppCompatDelegate.getApplicationLocales();
+        if (Objects.requireNonNull(localeListCompat.get(0)).getLanguage().equals(new Locale("ko").getLanguage())) {
+            translateQuestion(question);
+        } else {
+            questionView.setText(question);
+        }
 
         Random random = new Random();
         answer = numberResponse.number;
@@ -172,6 +183,45 @@ public class GameActivity extends AppCompatActivity {
         answerButton2.setOnClickListener(v -> handleUserAnswer(2));
         answerButton3.setText(String.valueOf(number3));
         answerButton3.setOnClickListener(v -> handleUserAnswer(3));
+    }
+
+    public void makeTranslatedQuestionView(String response) {
+        Gson gson = new Gson();
+        System.out.println(response);
+        TranslateResponse translateResponse = gson.fromJson(response, TranslateResponse.class);
+        String translatedQuestion = translateResponse.trans;
+        questionView.setText(translatedQuestion);
+    }
+
+    public void translateQuestion(String question) {
+        String url = "https://google-translate113.p.rapidapi.com/api/v1/translator/text";
+
+        StringRequest request = new StringRequest(Request.Method.POST, url,
+                this::makeTranslatedQuestionView,
+                error -> System.err.println(error.toString())
+        ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("from", "en");
+                params.put("to", "ko");
+                params.put("text", question);
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> params = new HashMap<>();
+                final String API_KEY = getResources().getString(R.string.translate_api_key);
+                final String API_HOST = getResources().getString(R.string.translate_api_host);
+                params.put("X-RapidAPI-Key", API_KEY);
+                params.put("X-RapidAPI-Host", API_HOST);
+                return params;
+            }
+        };
+
+        request.setShouldCache(false);
+        requestQueue.add(request);
     }
 
     public void makeQuestion() {
