@@ -1,5 +1,7 @@
 package com.example.number_quiz;
 
+import static java.util.Objects.requireNonNull;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +28,6 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -149,7 +150,10 @@ public class GameActivity extends AppCompatActivity {
         String question = String.format("Which number is %s?", numberResponse.text);
 
         LocaleListCompat localeListCompat = AppCompatDelegate.getApplicationLocales();
-        if (Objects.requireNonNull(localeListCompat.get(0)).getLanguage().equals(new Locale("ko").getLanguage())) {
+
+        if (!localeListCompat.isEmpty() &&
+                requireNonNull(localeListCompat.get(0)).getLanguage()
+                        .equals(new Locale("ko").getLanguage())) {
             translateQuestion(question);
         } else {
             questionView.setText(question);
