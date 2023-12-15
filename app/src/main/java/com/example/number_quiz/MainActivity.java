@@ -24,6 +24,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        final Button questionBankButton = findViewById(R.id.questionBankButton);
+        questionBankButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), QuestionBankActivity.class);
+            startActivity(intent);
+        });
+
         final Button langButton = findViewById(R.id.langButton);
         langButton.setOnClickListener(v -> {
             LocaleListCompat oldLocale, newLocale;

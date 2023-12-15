@@ -16,4 +16,6 @@
     <string name="select_lang">언어: </string>
     <string name="hint">힌트</string>
     <string name="language">한국어</string>
+    <string name="question_bank">문제은행</string>
+    <string name="question_view_entry">%1$s\정답: %2$d</string>
 </resources>

@@ -22,6 +22,7 @@ import androidx.datastore.preferences.core.Preferences;
 import androidx.datastore.preferences.core.PreferencesKeys;
 import androidx.datastore.preferences.rxjava3.RxPreferenceDataStoreBuilder;
 import androidx.datastore.rxjava3.RxDataStore;
+import androidx.room.Room;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,6 +33,7 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import io.reactivex.rxjava3.core.Flowable;
@@ -58,6 +60,11 @@ public class GameActivity extends AppCompatActivity {
     public int highScore = 0;
     public boolean isHintUsed = false;
 
+    public String language;
+
+    QuestionRecord insertingQuestionRecord;
+    QuestionDao questionDao;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +80,19 @@ public class GameActivity extends AppCompatActivity {
         answerButton3 = findViewById(R.id.answer3);
         hintButton = findViewById(R.id.hintView);
         hintButton.setOnClickListener(v -> useHint());
+
+        LocaleListCompat localeListCompat = AppCompatDelegate.getApplicationLocales();
+        if (!localeListCompat.isEmpty() &&
+                requireNonNull(localeListCompat.get(0)).getLanguage()
+                        .equals(new Locale("ko").getLanguage())) {
+            language = "ko";
+        } else {
+            language = "en";
+        }
+
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(),
+                AppDatabase.class, "QuestionDB").build();
+        questionDao = db.questionDao();
 
         if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -166,10 +186,12 @@ public class GameActivity extends AppCompatActivity {
 
     public void handleUserAnswer(int userAnswerNo) {
         if (userAnswerNo == answerNo) {
+            recordQuestion(true);
             questionView.setText(R.string.correct_answer);
             score++;
             updateScoreView();
         } else {
+            recordQuestion(false);
             questionView.setText(getString(R.string.incorrect_answer, answer));
             hearts--;
             updateHeartView();
@@ -188,6 +210,16 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    public void recordQuestion(boolean correct) {
+
+        insertingQuestionRecord = new QuestionRecord(
+                questionView.getText().toString(), answer, correct, language);
+
+        InsertQuestionThread thread = new InsertQuestionThread();
+        thread.start();
+
+    }
+
     private void returnToTitle() {
         dataStore.dispose();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -200,11 +232,7 @@ public class GameActivity extends AppCompatActivity {
         NumberResponse numberResponse = gson.fromJson(response, NumberResponse.class);
         String question = String.format("Which number is %s?", numberResponse.text);
 
-        LocaleListCompat localeListCompat = AppCompatDelegate.getApplicationLocales();
-
-        if (!localeListCompat.isEmpty() &&
-                requireNonNull(localeListCompat.get(0)).getLanguage()
-                        .equals(new Locale("ko").getLanguage())) {
+        if (Objects.equals(language, "ko")) {
             translateQuestion(question);
         } else {
             questionView.setText(question);
@@ -301,5 +329,11 @@ public class GameActivity extends AppCompatActivity {
 
         request.setShouldCache(false);
         requestQueue.add(request);
+    }
+
+    class InsertQuestionThread extends Thread {
+
+        @Override
+        public void run() { questionDao.insertAll(insertingQuestionRecord); }
     }
 }
