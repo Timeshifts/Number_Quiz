@@ -2,7 +2,6 @@ package com.example.number_quiz;
 
 import static java.util.Objects.requireNonNull;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -222,8 +221,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void returnToTitle() {
         dataStore.dispose();
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+        finish();
     }
 
     public void enableAnswerButton() {
