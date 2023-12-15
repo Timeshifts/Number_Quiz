@@ -226,16 +226,26 @@ public class GameActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void enableAnswerButton() {
+        answerButton1.setOnClickListener(v -> handleUserAnswer(1));
+        answerButton2.setOnClickListener(v -> handleUserAnswer(2));
+        answerButton3.setOnClickListener(v -> handleUserAnswer(3));
+    }
+
     public void makeQuestionView(String response) {
 
         Gson gson = new Gson();
         NumberResponse numberResponse = gson.fromJson(response, NumberResponse.class);
         String question = String.format("Which number is %s?", numberResponse.text);
 
+        boolean waitForTranslate;
+
         if (Objects.equals(language, "ko")) {
             translateQuestion(question);
+            waitForTranslate = true;
         } else {
             questionView.setText(question);
+            waitForTranslate = false;
         }
 
         Random random = new Random();
@@ -261,11 +271,9 @@ public class GameActivity extends AppCompatActivity {
         }
 
         answerButton1.setText(String.valueOf(number1));
-        answerButton1.setOnClickListener(v -> handleUserAnswer(1));
         answerButton2.setText(String.valueOf(number2));
-        answerButton2.setOnClickListener(v -> handleUserAnswer(2));
         answerButton3.setText(String.valueOf(number3));
-        answerButton3.setOnClickListener(v -> handleUserAnswer(3));
+        if (!waitForTranslate) enableAnswerButton();
     }
 
     public void makeTranslatedQuestionView(String response) {
@@ -274,6 +282,7 @@ public class GameActivity extends AppCompatActivity {
         TranslateResponse translateResponse = gson.fromJson(response, TranslateResponse.class);
         String translatedQuestion = translateResponse.trans;
         questionView.setText(translatedQuestion);
+        enableAnswerButton();
     }
 
     public void translateQuestion(String question) {
