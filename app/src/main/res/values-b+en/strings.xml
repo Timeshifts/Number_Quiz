@@ -14,5 +14,6 @@
     <string name="first_heart">Heart: 1</string>
     <string name="best_view">"Best: %1$d"</string>
     <string name="select_lang">Language: </string>
+    <string name="hint">hint</string>
     <string name="language">English</string>
 </resources>

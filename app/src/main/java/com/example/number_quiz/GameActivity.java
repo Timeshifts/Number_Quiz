@@ -4,8 +4,12 @@ import static java.util.Objects.requireNonNull;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StrikethroughSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,6 +48,7 @@ public class GameActivity extends AppCompatActivity {
     Button answerButton1;
     Button answerButton2;
     Button answerButton3;
+    ImageButton hintButton;
 
     public int answer;
     public int answerNo;
@@ -51,6 +56,7 @@ public class GameActivity extends AppCompatActivity {
     public int hearts = 3;
     public int score = 0;
     public int highScore = 0;
+    public boolean isHintUsed = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,6 +71,8 @@ public class GameActivity extends AppCompatActivity {
         answerButton1 = findViewById(R.id.answer1);
         answerButton2 = findViewById(R.id.answer2);
         answerButton3 = findViewById(R.id.answer3);
+        hintButton = findViewById(R.id.hintView);
+        hintButton.setOnClickListener(v -> useHint());
 
         if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(getApplicationContext());
@@ -78,6 +86,49 @@ public class GameActivity extends AppCompatActivity {
         Random random = new Random();
         final int bound = (int) (baseNumber * range);
         return random.nextInt(bound + 1);
+    }
+
+    public void useHint() {
+        if (isHintUsed) return;
+        isHintUsed = true;
+        hintButton.setImageResource(R.drawable.bulb_empty);
+        Random random = new Random();
+        CharSequence charSequence;
+
+        int hintNo = random.nextInt(3) + 1;
+
+        // 정답 지우기 방지
+        if (hintNo == answerNo) {
+            hintNo += 1;
+            if (hintNo == 4) hintNo = 1;
+        }
+
+        Button strikeButton;
+
+        switch (hintNo) {
+            case 1:
+                strikeButton = answerButton1;
+                break;
+            case 2:
+                strikeButton = answerButton2;
+                break;
+            default: // 3
+                strikeButton = answerButton3;
+                break;
+        }
+
+        charSequence = strikeButton.getText();
+        SpannableString spannableString = new SpannableString(charSequence);
+
+        StrikethroughSpan strikethroughSpan = new StrikethroughSpan();
+
+        spannableString.setSpan(strikethroughSpan, 0, charSequence.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        strikeButton.setText(spannableString);
+
+        // 리스너 제거로 답에서 제외된 버튼 클릭하는 불상사 방지
+        strikeButton.setOnClickListener(null);
     }
 
     public void updateHeartView() {
